@@ -32,6 +32,10 @@ public class BowlingLine {
 			
 	}
 	
+	private int strikeOrSpare() {
+		if()
+	}
+	
 	private void rollBall()
 	{
 		while(currentFrame <= 10)
@@ -59,7 +63,7 @@ public class BowlingLine {
 			this.score = score + downed;
 			rollBall();
 		}
-//		else if(rollsThisFrame == 10 && this.currentFrame == 10)
+//		else if(rollsThisFrame == 1 && this.currentFrame == 10)
 //		{
 //			rollsThisFrame++;
 //			this.score = score + downed;
