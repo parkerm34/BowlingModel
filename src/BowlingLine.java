@@ -217,6 +217,8 @@ public class BowlingLine {
 	 */
 	public boolean gameOver()
 	{
+		if(this.currentFrame == 10 && (this.rollsThisFrame == 2 || this.rollsThisFrame == 3))
+			return true;
 		return false;
 	}
 	
@@ -225,7 +227,10 @@ public class BowlingLine {
 	 */
 	public boolean canShowScoreFrame(int frame)
 	{
-		return false;
+		if(frame > this.currentFrame)
+			return false;
+		else
+			return true;
 	}
 	
 	/* Input: frame number
