@@ -34,17 +34,20 @@ public class BowlingLine {
 	
 	private void rollBall()
 	{
-		if(rollsThisFrame == 0)
-			setPins(10);
-		enterRoll();
-		this.hit = this.bowl.nextInt();
-		if(bowlCheck(this.hit))
+		while(currentFrame <= 10)
 		{
-			System.out.println(invalidMessage);
-			rollBall();
+			if(rollsThisFrame == 0)
+				setPins(10);
+			enterRoll();
+			this.hit = this.bowl.nextInt();
+			if(bowlCheck(this.hit))
+			{
+				System.out.println(invalidMessage);
+				rollBall();
+			}
+			else
+				score(this.hit);
 		}
-		else
-			score(this.hit);
 	}
 	
 	private void score(int downed)
@@ -53,11 +56,21 @@ public class BowlingLine {
 		if(rollsThisFrame == 0)
 		{
 			rollsThisFrame++;
-//			rollBall();
 			this.score = score + downed;
+			rollBall();
 		}
+//		else if(rollsThisFrame == 10 && this.currentFrame == 10)
+//		{
+//			rollsThisFrame++;
+//			this.score = score + downed;
+//		}
 		else
+		{
+			currentFrame++;
+			setPins(10);
 			this.score = score + downed;
+			System.out.println("Total Score in frame " + (currentFrame - 1) + " is " + getScore());
+		}
 	}
 	
 	private boolean bowlCheck(int downed)
@@ -95,7 +108,7 @@ public class BowlingLine {
 	
 	public void setRollsThisFrame(int bowls)
 	{
-		if(bowls > 3 || bowls < 0)
+		if(bowls > 2 || bowls < 0)
 		{
 			System.out.println("Invalid number of rolls, please correct: ");
 			setRollsThisFrame(this.rolls.nextInt());
@@ -107,5 +120,10 @@ public class BowlingLine {
 	public int getRollsThisFrame()
 	{
 		return this.rollsThisFrame;
+	}
+	
+	public int getScore()
+	{
+		return this.score;
 	}
 }
