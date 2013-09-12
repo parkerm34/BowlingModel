@@ -22,6 +22,13 @@
  * void setPins(int remain)
  * void setCurrentFrame(int frame)
  * void setRollsThisFrame(int bowls)
+ * boolean can ShowScoreFrame(int frame)
+ * boolean gameOver()
+ * String getRollsForFrame(int frame)
+ * void pinsDowned(int pins)
+ * int pinsLeftToDown()
+ * int scoresAtFrame(int frame)
+ * int totalScore()
  * 
  * Private
  * =======
@@ -36,6 +43,7 @@
  * ++++++++++++++++++
  * Public
  * ======
+ * LAST_FRAME 10
  * 
  * Private
  * =======
@@ -202,6 +210,70 @@ public class BowlingLine {
 	private void enterRoll()
 	{
 		System.out.print("Enter roll: ");	
+	}
+	
+	/* Checks to see which frame of the game and how many bowls have been made
+	 * and returns a gameover boolean. True for over, False for still going.
+	 */
+	public boolean gameOver()
+	{
+		return false;
+	}
+	
+	/* Checks element if score is prepared at the specified frame yet.
+	 * Returns boolean before calculating.
+	 */
+	public boolean canShowScoreFrame(int frame)
+	{
+		return false;
+	}
+	
+	/* Input: frame number
+	 * Output: String of bowls in the specified frame
+	 * 
+	 * Finds the correct element and strings together the full frame of bowling
+	 * available.
+	 */
+	public String getRollsForFrame(int frame)
+	{
+		return "   ";
+		// temp "no bowls yet"
+	}
+	
+	/* A single bowl from the user. This is after the keyboard has been scanned
+	 * in. This just adds the pins knocked over, assuming the possibility
+	 * has already been accepted.
+	 */
+	public void pinsDowned(int pins)
+	{
+		score(pins);
+	}
+	
+	/* A quick method just to return how many pins are left on the lane.
+	 */
+	public int pinsLeftToDown()
+	{
+		return pinsLeft;
+	}
+	
+	/* TEMPORARILY RETURNING TOTAL SCORE
+	 * 
+	 * This method returns a score that is calculated at that point in the requested
+	 * frame. This can be anywhere between frame 1-10 at any time.
+	 */
+	public int scoreAtFrame(int frame)
+	{
+		//TODO
+		return this.score;
+	}
+	
+	/* This returns the total score that can be calculated thus far into the game.
+	 * This will be in the instance variable this.score during the whole game,
+	 * keeping a rolling score.
+	 */
+	public int totalScore()
+	{
+		return this.score;
 	}
 	/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 	/*                                 Setters and Getters                                         */
