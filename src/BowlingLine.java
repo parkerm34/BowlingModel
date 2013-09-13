@@ -225,7 +225,7 @@ public class BowlingLine implements IBowlingLine {
 			scoreboard[2][(7*(currentFrame) + 5)] = 'X';
 		else if(hit == 0)
 			scoreboard[2][(7*(currentFrame) + 5)] = '-';
-		else if(List.get(currentFrame).getHit2() + hit == 10)
+		else if(List.get(currentFrame).getHit2() + hit == 10 && List.get(currentFrame).getHit1() + List.get(currentFrame).getHit2() != 10)
 			scoreboard[2][(7*(currentFrame) + 5)] = '/';
 		else
 		{
