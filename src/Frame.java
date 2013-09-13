@@ -17,18 +17,44 @@ public class Frame {
 		setSpare(false);
 	}
 	
-//	public String getFrameRolls()
-//	{
-//		String tempString = new String();
-//		char tempChar1 = (char)(48 + hit1);
-//		char tempChar2 = (char)(48 + hit2);
-//		char tempChar3;
-//		if(additionalScore >=0 )
-//			tempChar3 = (char)(48 + additionalScore);
-//		
-//		return ();
-//		
-//	}
+	public String getFrameRolls()
+	{
+		String tempString = new String();
+		String tempChar1 = new String();
+		String tempChar2 = new String();
+		String tempChar3 = new String();
+		
+		if(hit1 == 10 && hit2 == 10 && additionalScore == 10)
+			return "XXX";
+		
+		if(hit1 == 10)
+			return "X  ";
+		else if(hit1 > 0)
+			tempChar1 = Integer.toString(hit1);
+		else if(hit1 == 0)
+			tempChar1 = "-";
+		
+		if(hit1 + hit2 == 10)
+			return hit1 + " /";
+		else if(hit2 > 0)
+			tempChar2 = Integer.toString(hit2);
+		else if(hit2 == 0)
+			tempChar2 = "-";
+		
+		if(additionalScore >=0 )
+		{
+			if(additionalScore > 0)
+				tempChar3 = Integer.toString(additionalScore);
+			else
+				tempChar3 = 
+			tempString = tempChar1 + tempChar2 + tempChar3;
+		}
+		else
+			tempString = tempChar1 + " " + tempChar2;
+		
+		return (tempString);
+		
+	}
 	
 	public void addAdditionalScore(int score) {
 		additionalScore += score;

@@ -72,13 +72,9 @@
  */
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 
 public class BowlingLine implements IBowlingLine {
-
-	private Scanner rolls = new Scanner(System.in);
-	private Scanner bowl = new Scanner(System.in);
 	
 	private int pinsLeft;
 	private int hit;
@@ -110,16 +106,6 @@ public class BowlingLine implements IBowlingLine {
 		currentFrame = 0;
 		setPins(10);
 		initList(); ///////change/////////
-//		enterRoll();
-//		this.hit = this.bowl.nextInt();
-//		if(bowlCheck(this.hit))
-//		{
-//			System.out.println(invalidMessage);
-//			rollBall();
-//			return;
-//		}
-//		else
-//			score(this.hit);
 	}
 	
 	/* Set up the scoreboard
@@ -165,19 +151,7 @@ public class BowlingLine implements IBowlingLine {
 			scoreboard[2][77] = 'T';
 			scoreboard[2][78] = 'A';
 			scoreboard[2][79] = 'L';
-		
-//			scoreboard[2][24] = '3';
-//			scoreboard[2][26] = '5';
-
-//			setFrameFirstBowl(3, 4);
-//			setFrameFirstBowl(10, 5);
-//			
-//			setFrameSecondBowl(10, 7);
-//			setFrameSecondBowl(5, 4);
-			
-//			score = 150;
-//			setScoreboardTotal();
-			
+					
 			printScoreboard();
 	}
 	
@@ -209,7 +183,7 @@ public class BowlingLine implements IBowlingLine {
 		setScoreboardFrameScore();
 	}
 	
-	private void setLastFrameFirstBowl(int hit, int currentFrame)
+	public void setLastFrameFirstBowl(int hit, int currentFrame)
 	{
 		if(hit == 10)
 			scoreboard[2][(7*(currentFrame) + 3)] = 'X';
@@ -223,7 +197,7 @@ public class BowlingLine implements IBowlingLine {
 
 	}
 
-	private void setLastFrameSecondBowl(int hit, int currentFrame)
+	public void setLastFrameSecondBowl(int hit, int currentFrame)
 	{
 		if(hit == 10)
 			scoreboard[2][(7*(currentFrame) + 4)] = 'X';
@@ -237,7 +211,7 @@ public class BowlingLine implements IBowlingLine {
 
 	}
 
-	private void setLastFrameThirdBowl(int hit, int currentFrame)
+	public void setLastFrameThirdBowl(int hit, int currentFrame)
 	{
 		if(hit == 10)
 			scoreboard[2][(7*(currentFrame) + 5)] = 'X';
@@ -337,22 +311,14 @@ public class BowlingLine implements IBowlingLine {
 	 */
 	public void rollBall()
 	{
-//		while(currentFrame <= 9)
-//		{
-//			setFrameFirstBowl(this.hit, this.currentFrame);
-//			printScoreboard();
 			if(rollsThisFrame == 0)	
 				setPins(10);
 			
 			rollAction();
 			
-//			if(currentFrame < 9)
-//				rollAction();
 			
 			if(currentFrame == 9)
 				return;
-			
-//		}
 	}
 	
 	/* Action of throwing the ball
@@ -365,14 +331,10 @@ public class BowlingLine implements IBowlingLine {
 	 * to the score instance variable in the correct manner.
 	 */
 	private void rollAction()
-	{
-//		enterRoll();
-//		this.hit = this.bowl.nextInt();
-		
+	{		
 		if(bowlCheck(this.hit))
 		{
 			System.out.println(invalidMessage);
-//			rollBall();
 			return;
 		}
 		else
@@ -478,17 +440,20 @@ public class BowlingLine implements IBowlingLine {
 		else if(currentFrame == 9) {
 			if(rollsThisFrame == 1)
 				setLastFrameSecondBowl(this.hit, this.currentFrame);
-			if(rollsThisFrame == 2)
+			if(rollsThisFrame == 2 && (List.get(9).getHit1() + List.get(9).getHit2() >= 10))
 			{
 				setPins(10);
 				setLastFrameThirdBowl(this.hit, this.currentFrame);
 				rollsThisFrame++;
 				return;
 			}
+			else if(rollsThisFrame == 2 && (List.get(9).getHit1() + List.get(9).getHit2() < 10))
+				return;
 			List.get(currentFrame).setHit2(downed);
 			if(( List.get(9).getStrike() || List.get(9).getSpare() ) && rollsThisFrame < 2)
 				newFrame();
 			else {
+				rollsThisFrame++;
 				return;
 			}	
 		}
@@ -500,10 +465,7 @@ public class BowlingLine implements IBowlingLine {
 		}
 		
 		System.out.println("Total:" + score);
-		
-//		rollBall();
 		return;
-		
 	}
 
 	
@@ -517,19 +479,13 @@ public class BowlingLine implements IBowlingLine {
 		return false;
 	}
 	
-//	/* Quicker command for s.o.p("enter roll: ")
-//	 */
-//	private void enterRoll()
-//	{
-//		System.out.print("Enter roll: ");		
-//	}
 	
 	/* Checks to see which frame of the game and how many bowls have been made
 	 * and returns a gameover boolean. True for over, False for still going.
 	 */
 	public boolean gameOver()
 	{
-		if(this.currentFrame == 10)
+		if(this.currentFrame == 10 || (this.currentFrame == 9 && rollsThisFrame == 2 && !(List.get(9).getSpare() || List.get(9).getStrike())))
 			return true;
 		return false;
 	}
@@ -550,8 +506,7 @@ public class BowlingLine implements IBowlingLine {
 	 */
 	public String getRollsForFrame(int frame)
 	{
-		return " ";
-		// temp "no bowls yet"
+		return List.get(frame).getFrameRolls();
 	}
 	
 	/* A single bowl from the user. This is after the keyboard has been scanned
@@ -616,8 +571,8 @@ public class BowlingLine implements IBowlingLine {
 	{
 		if(bowls > 2 || bowls < 0)
 		{
-			System.out.println("Invalid number of rolls, please correct: ");
-			setRollsThisFrame(this.rolls.nextInt());
+			System.out.println("Invalid number of rolls, set to 0");
+			setRollsThisFrame(0);
 		}
 		else
 			this.rollsThisFrame = bowls;
@@ -641,5 +596,20 @@ public class BowlingLine implements IBowlingLine {
 	public void setHit(int downed)
 	{
 		this.hit = downed;
+	}
+	
+	public void setScore(int tempScore)
+	{
+		this.score = tempScore;
+	}
+	
+	public ArrayList<Frame> getList()
+	{
+		return List;
+	}
+	
+	public char[][] getScoreboard()
+	{
+		return scoreboard;
 	}
 }
