@@ -4,7 +4,7 @@ public class Frame {
 	private int additionalScore;
 	private boolean strike;
 	private boolean spare;
-//	private char[] frameScore;
+	private char[] frameRolls;
 	
 	public Frame pevious;
 	public Frame next;
@@ -16,6 +16,19 @@ public class Frame {
 		setStrike(false);
 		setSpare(false);
 	}
+	
+//	public String getFrameRolls()
+//	{
+//		String tempString = new String();
+//		char tempChar1 = (char)(48 + hit1);
+//		char tempChar2 = (char)(48 + hit2);
+//		char tempChar3;
+//		if(additionalScore >=0 )
+//			tempChar3 = (char)(48 + additionalScore);
+//		
+//		return ();
+//		
+//	}
 	
 	public void addAdditionalScore(int score) {
 		additionalScore += score;
