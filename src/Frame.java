@@ -4,9 +4,10 @@ public class Frame {
 	private int additionalScore;
 	private boolean strike;
 	private boolean spare;
+//	private char[] frameScore;
 	
-	Frame pevious;
-	Frame next;
+	public Frame pevious;
+	public Frame next;
 	
 	public Frame() {
 		setHit1(-1);

@@ -75,7 +75,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-public class BowlingLine {
+public class BowlingLine implements IBowlingLine {
 
 	private Scanner rolls = new Scanner(System.in);
 	private Scanner bowl = new Scanner(System.in);
@@ -85,11 +85,10 @@ public class BowlingLine {
 	private int rollsThisFrame;
 	private int currentFrame;
 	private int score;
-	//private int spareAdder;
-	//private boolean strikeAdder;
+
 	private ArrayList<Frame> List = new ArrayList<Frame>();
 	
-	
+	private char[][] scoreboard = new char [4][80];
 	
 	private static final String invalidMessage = "Invalid roll, try again";
 	
@@ -106,11 +105,12 @@ public class BowlingLine {
 	 */
 	public BowlingLine()
 	{
+		setScoreBoard();
 		score = 0;
 		currentFrame = 0;
 		setPins(10);
-		enterRoll();
 		initList(); ///////change/////////
+		enterRoll();
 		this.hit = this.bowl.nextInt();
 		if(bowlCheck(this.hit))
 		{
@@ -119,6 +119,117 @@ public class BowlingLine {
 		}
 		else
 			score(this.hit);
+	}
+	
+	/* Set up the scoreboard
+	 * Inputs:
+	 * Outputs: a blank scoreboard
+	 * 
+	 * What: This method creates an empty scoreboard with each number in each
+	 * frame. Also, this fills in the word TOTAL in the final frame.
+	 */
+	private void setScoreBoard()
+	{
+		for(int colCount = 0; colCount < 80; colCount++)
+		{
+			if((colCount%7 == 0) && (colCount != 0) && (colCount < 75))
+			{
+				scoreboard[0][colCount] = '|';
+				scoreboard[1][colCount] = '+';
+				scoreboard[2][colCount] = '|';
+				scoreboard[3][colCount] = '|';
+			}
+			else
+			{
+				scoreboard[0][colCount] = ' ';
+				scoreboard[1][colCount] = '-';
+				scoreboard[2][colCount] = ' ';
+				scoreboard[3][colCount] = ' ';
+			}
+		}
+			scoreboard[0][5]  = '1';
+			scoreboard[0][12] = '2';
+			scoreboard[0][19] = '3';
+			scoreboard[0][26] = '4';
+			scoreboard[0][33] = '5';
+			scoreboard[0][40] = '6';
+			scoreboard[0][47] = '7';
+			scoreboard[0][54] = '8';
+			scoreboard[0][61] = '9';
+			scoreboard[0][67] = '1';
+			scoreboard[0][68] = '0';
+			
+			scoreboard[2][75] = 'T';
+			scoreboard[2][76] = 'O';
+			scoreboard[2][77] = 'T';
+			scoreboard[2][78] = 'A';
+			scoreboard[2][79] = 'L';
+		
+//			scoreboard[2][24] = '3';
+//			scoreboard[2][26] = '5';
+
+//			setFrameFirstBowl(3, 4);
+//			setFrameFirstBowl(10, 5);
+//			
+//			setFrameSecondBowl(10, 7);
+//			setFrameSecondBowl(5, 4);
+			
+//			score = 150;
+//			setScoreboardTotal();
+			
+			printScoreboard();
+	}
+	
+	public void setFrameFirstBowl(int hit, int currentFrame)
+	{
+		if(hit == 10)
+			scoreboard[2][(7*(currentFrame-1) + 5)] = 'X';
+		else
+		{
+			int temp = 48 + hit;
+			scoreboard[2][(7*(currentFrame-1) + 3)] = (char)temp;
+		}
+	}
+	
+	public void setFrameSecondBowl(int hit, int currentFrame)
+	{
+		if(List.get(currentFrame).getSpare())
+//		if(hit == 10)
+			scoreboard[2][(7*(currentFrame-1) + 5)] = '/';
+		else
+		{
+			int temp = 48 + hit;
+			scoreboard[2][(7*(currentFrame-1) + 5)] = (char)temp;
+		}
+	}
+	
+	private void setScoreboardTotal()
+	{
+		int temp = score;
+		if(this.score > 0)
+			scoreboard[3][78] = (char)(48 + (temp%10));
+		if(this.score > 9)
+			scoreboard[3][77] = (char)(48 + ((temp/10)%10));
+		if(this.score > 99 )
+			scoreboard[3][76] = (char)(48 + (((temp/10)/10)%10));
+	}
+	
+	/* Print scoreboard function
+	 * Inputs: 
+	 * Outputs: prints scoreboard
+	 * 
+	 * This method is a helper function to reduce the code in the
+	 * setScorBoard method. This contains 2 for loops to print the
+	 * 2D char array
+	 */
+	public void printScoreboard()
+	{
+		for(int rowCount = 0; rowCount < 4; rowCount++)
+		{
+			for(int colCount = 0; colCount < 80; colCount++)
+				System.out.print(scoreboard[rowCount][colCount]);
+			System.out.println();
+		}
 	}
 	
 	private void initList() {
@@ -169,9 +280,12 @@ public class BowlingLine {
 		{
 			if(rollsThisFrame == 0)	
 				setPins(10);
+			
 			rollAction();
+			
 			if(currentFrame < 9)
 				rollAction();
+			
 			if(currentFrame == 9)
 				return;
 		}
@@ -190,6 +304,7 @@ public class BowlingLine {
 	{
 		enterRoll();
 		this.hit = this.bowl.nextInt();
+		
 		if(bowlCheck(this.hit))
 		{
 			System.out.println(invalidMessage);
@@ -232,6 +347,10 @@ public class BowlingLine {
 						if(List.get(currentFrame - 2).getStrike()) {
 							List.get(currentFrame - 2).addAdditionalScore(downed);
 							this.score = score + downed;
+							///////////////////////////////////////////////////////////////////////////////////////////////////
+							System.out.println("Frame " + (currentFrame-2) + " = " + (List.get(currentFrame - 2).getHit1() + 
+									List.get(currentFrame - 2).getHit2() + List.get(currentFrame - 2).getAdditionalScore()));
+							///////////////////////////////////////////////////////////////////////////////////////////////////
 						}
 					}
 					List.get(currentFrame - 1).addAdditionalScore(downed);
@@ -241,7 +360,13 @@ public class BowlingLine {
 				else if(List.get(currentFrame - 1).getSpare()) {
 					List.get(currentFrame - 1).addAdditionalScore(downed);
 					this.score = score + downed * 2;
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////
+					System.out.println("Frame " + (currentFrame-1) + " = " + (List.get(currentFrame - 1).getHit1() + 
+							List.get(currentFrame - 1).getHit2() + List.get(currentFrame - 1).getAdditionalScore()));
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////
 				}
+				else
+					this.score = score + downed;
 			}
 			else
 				this.score = score + downed * 2;
@@ -262,6 +387,22 @@ public class BowlingLine {
 				List.get(currentFrame).setHit1(downed);
 				rollsThisFrame++;
 				strikeOrSpare();
+				
+				if(List.get(currentFrame - 1).getStrike()) {
+					if(List.get(currentFrame - 2).getStrike()) {
+						List.get(currentFrame - 2).addAdditionalScore(downed);
+						this.score = score + downed;
+						///////////////////////////////////////////////////////////////////////////////////////////////////////////
+						System.out.println("Frame " + (currentFrame-2) + " = " + (List.get(currentFrame - 2).getHit1() + 
+								List.get(currentFrame - 2).getHit2() + List.get(currentFrame - 2).getAdditionalScore()));
+						///////////////////////////////////////////////////////////////////////////////////////////////////////////
+					}
+					List.get(currentFrame - 1).addAdditionalScore(downed);
+					this.score = score + downed * 2;
+					
+					
+				}
+				
 				//if strike reset pins
 				if(List.get(9).getStrike())
 					setPins(10);
@@ -273,11 +414,26 @@ public class BowlingLine {
 				List.get(9).addAdditionalScore(downed);
 //				gameOver();
 //				endGame();
-				System.out.println("hi");
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				System.out.println("Frame " + (currentFrame) + " = " + (List.get(currentFrame).getHit1() + 
+						List.get(currentFrame).getHit2() + List.get(currentFrame).getAdditionalScore()));
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
+			
 			//second roll
 			else {
 				rollsThisFrame++;
+				
+				if(List.get(currentFrame - 1).getStrike()) {
+					List.get(currentFrame - 1).addAdditionalScore(downed);
+					this.score = score + downed;
+					
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////
+					System.out.println("Frame " + (currentFrame-1) + " = " + (List.get(currentFrame - 1).getHit1() + 
+							List.get(currentFrame - 1).getHit2() + List.get(currentFrame - 1).getAdditionalScore()));
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////
+				}
+				
 				//if first roll was strike, add new pins to additionalScore and reset pins if another strike rolled
 				if(List.get(9).getStrike()) {
 					this.score = score + downed;
@@ -299,10 +455,19 @@ public class BowlingLine {
 						this.score = score + downed;
 						List.get(currentFrame).setHit2(downed);
 						gameOver();
+						////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						System.out.println("Frame " + (currentFrame) + " = " + (List.get(currentFrame).getHit1() + 
+								List.get(currentFrame).getHit2()));
+						////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						
 					}
 					
 				}
 			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			System.out.println("Total: " + score);
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
 		}
 		
 		//if second roll and not 10th frame, check for previous frame strike, add score, new frame, re-roll
@@ -315,14 +480,27 @@ public class BowlingLine {
 				if(List.get(currentFrame - 1).getStrike()) {
 					List.get(currentFrame - 1).addAdditionalScore(downed);
 					this.score = score + downed * 2;
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					System.out.println("Frame " + (currentFrame - 1) + " = " + (List.get(currentFrame - 1).getHit1() + 
+							List.get(currentFrame - 1).getHit2() + List.get(currentFrame - 1).getAdditionalScore()));
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				}
 			}
-			else
-				this.score = score + downed * 2;
-			
+			else {
+				this.score = score + downed;
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				System.out.println("Frame " + (currentFrame) + " = " + (List.get(currentFrame).getHit1() + 
+						List.get(currentFrame).getHit2()));
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			}
 			currentFrame++;
 			setPins(10);
 			rollsThisFrame = 0;
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			System.out.println("Total: " + score);
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
 			rollBall();
 		}
 	}
