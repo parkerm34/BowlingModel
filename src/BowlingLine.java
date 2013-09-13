@@ -369,14 +369,14 @@ public class BowlingLine implements IBowlingLine {
 					this.score = score + downed;
 			}
 			else
-				this.score = score + downed * 2;
-			
+				this.score = score + downed;
 			//if strike, go to next frame
 			if(List.get(currentFrame).getStrike()) {
 				currentFrame++;
 				setPins(10);
 				rollsThisFrame = 0;
 			}
+			
 			//roll the next ball
 			rollBall();
 		}
@@ -445,7 +445,7 @@ public class BowlingLine implements IBowlingLine {
 				//check if spare, reset pins if spare and re-roll; else if not spare add downed and game over
 				else {
 					strikeOrSpare();
-					if(List.get(0).getSpare()) {
+					if(List.get(9).getSpare()) {
 						this.score = score + downed;
 						List.get(9).setHit2(downed);
 						setPins(10);

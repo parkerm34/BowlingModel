@@ -10,8 +10,8 @@ public class Frame {
 	public Frame next;
 	
 	public Frame() {
-		setHit1(-1);
-		setHit2(-1);
+		setHit1(0);
+		setHit2(0);
 		setAdditionalScore(0);
 		setStrike(false);
 		setSpare(false);
