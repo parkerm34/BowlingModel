@@ -183,35 +183,93 @@ public class BowlingLine implements IBowlingLine {
 	public void setFrameFirstBowl(int hit, int currentFrame)
 	{
 		if(hit == 10)
-			scoreboard[2][(7*(currentFrame-1) + 5)] = 'X';
+			scoreboard[2][(7*(currentFrame) + 5)] = 'X';
+		else if(hit == 0)
+			scoreboard[2][(7*(currentFrame) + 3)] = '-';
 		else
 		{
 			int temp = 48 + hit;
-			scoreboard[2][(7*(currentFrame-1) + 3)] = (char)temp;
+			scoreboard[2][(7*(currentFrame) + 3)] = (char)temp;
 		}
+		setScoreboardFrameScore();
 	}
 	
 	public void setFrameSecondBowl(int hit, int currentFrame)
 	{
-		if(List.get(currentFrame).getSpare())
-//		if(hit == 10)
-			scoreboard[2][(7*(currentFrame-1) + 5)] = '/';
+		if(List.get(currentFrame).getHit1() + hit == 10)
+			scoreboard[2][(7*(currentFrame) + 5)] = '/';
+		else if(hit == 0)
+			scoreboard[2][(7*(currentFrame) + 5)] = '-';
 		else
 		{
 			int temp = 48 + hit;
-			scoreboard[2][(7*(currentFrame-1) + 5)] = (char)temp;
+			scoreboard[2][(7*(currentFrame) + 5)] = (char)temp;
 		}
+		setScoreboardFrameScore();
 	}
 	
+	private void setLastFrameFirstBowl(int hit, int currentFrame)
+	{
+		if(hit == 10)
+			scoreboard[2][(7*(currentFrame) + 3)] = 'X';
+		else if(hit == 0)
+			scoreboard[2][(7*(currentFrame) + 3)] = '-';
+		else
+		{
+			int temp = 48 + hit;
+			scoreboard[2][(7*(currentFrame) + 3)] = (char)temp;
+		}
+
+	}
+
+	private void setLastFrameSecondBowl(int hit, int currentFrame)
+	{
+		if(hit == 10)
+			scoreboard[2][(7*(currentFrame) + 4)] = 'X';
+		else if(hit == 0)
+			scoreboard[2][(7*(currentFrame) + 4)] = '-';
+		else
+		{
+			int temp = 48 + hit;
+			scoreboard[2][(7*(currentFrame) + 4)] = (char)temp;
+		}
+
+	}
+
+	private void setLastFrameThirdBowl(int hit, int currentFrame)
+	{
+		if(hit == 10)
+			scoreboard[2][(7*(currentFrame) + 5)] = 'X';
+		else if(hit == 0)
+			scoreboard[2][(7*(currentFrame) + 5)] = '-';
+		else
+		{
+			int temp = 48 + hit;
+			scoreboard[2][(7*(currentFrame) + 5)] = (char)temp;
+		}
+
+	}
+
 	private void setScoreboardTotal()
 	{
 		int temp = score;
-		if(this.score > 0)
+		if(this.score >= 0)
 			scoreboard[3][78] = (char)(48 + (temp%10));
 		if(this.score > 9)
 			scoreboard[3][77] = (char)(48 + ((temp/10)%10));
 		if(this.score > 99 )
 			scoreboard[3][76] = (char)(48 + (((temp/10)/10)%10));
+	}
+	
+	private void setScoreboardFrameScore()
+	{
+		int temp = score;
+		if(this.score >= 0)
+			scoreboard[3][(7*(currentFrame) + 5)] = (char)(48 + (temp%10));
+		if(this.score > 9)
+			scoreboard[3][(7*(currentFrame) + 4)] = (char)(48 + ((temp/10)%10));
+		if(this.score > 99 )
+			scoreboard[3][(7*(currentFrame) + 3)] = (char)(48 + (((temp/10)/10)%10));
 	}
 	
 	/* Print scoreboard function
@@ -224,6 +282,7 @@ public class BowlingLine implements IBowlingLine {
 	 */
 	public void printScoreboard()
 	{
+		setScoreboardTotal();
 		for(int rowCount = 0; rowCount < 4; rowCount++)
 		{
 			for(int colCount = 0; colCount < 80; colCount++)
@@ -278,6 +337,7 @@ public class BowlingLine implements IBowlingLine {
 	{
 		while(currentFrame <= 9)
 		{
+			printScoreboard();
 			if(rollsThisFrame == 0)	
 				setPins(10);
 			
@@ -288,6 +348,7 @@ public class BowlingLine implements IBowlingLine {
 			
 			if(currentFrame == 9)
 				return;
+			
 		}
 	}
 	
@@ -339,6 +400,7 @@ public class BowlingLine implements IBowlingLine {
 			List.get(currentFrame).setHit1(downed);
 			rollsThisFrame++;
 			strikeOrSpare();
+			setFrameFirstBowl(downed, currentFrame);
 			
 			//check previous 2 frames for strikes or spares to add additionalScore
 			if(currentFrame != 0) {
@@ -387,6 +449,7 @@ public class BowlingLine implements IBowlingLine {
 				List.get(currentFrame).setHit1(downed);
 				rollsThisFrame++;
 				strikeOrSpare();
+				setLastFrameFirstBowl(downed, currentFrame);
 				
 				if(List.get(currentFrame - 1).getStrike()) {
 					if(List.get(currentFrame - 2).getStrike()) {
@@ -411,7 +474,9 @@ public class BowlingLine implements IBowlingLine {
 			//third roll, just add score and game over
 			if(rollsThisFrame == 2) {
 				this.score = score + downed;
+				rollsThisFrame++;
 				List.get(9).addAdditionalScore(downed);
+				setLastFrameThirdBowl(downed, currentFrame);
 //				gameOver();
 //				endGame();
 				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,11 +487,14 @@ public class BowlingLine implements IBowlingLine {
 			
 			//second roll
 			else {
+				if(rollsThisFrame > 2)
+					return;
 				rollsThisFrame++;
-				
+
 				if(List.get(currentFrame - 1).getStrike()) {
 					List.get(currentFrame - 1).addAdditionalScore(downed);
 					this.score = score + downed;
+					setLastFrameSecondBowl(downed, currentFrame);
 					
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////
 					System.out.println("Frame " + (currentFrame-1) + " = " + (List.get(currentFrame - 1).getHit1() + 
@@ -438,6 +506,7 @@ public class BowlingLine implements IBowlingLine {
 				if(List.get(9).getStrike()) {
 					this.score = score + downed;
 					List.get(9).addAdditionalScore(downed);
+					setLastFrameSecondBowl(downed, currentFrame);
 					if(pinsLeft == 0)
 						setPins(10);
 					rollBall();
@@ -445,6 +514,7 @@ public class BowlingLine implements IBowlingLine {
 				//check if spare, reset pins if spare and re-roll; else if not spare add downed and game over
 				else {
 					strikeOrSpare();
+					setLastFrameSecondBowl(downed, currentFrame);
 					if(List.get(9).getSpare()) {
 						this.score = score + downed;
 						List.get(9).setHit2(downed);
@@ -466,12 +536,15 @@ public class BowlingLine implements IBowlingLine {
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			System.out.println("Total: " + score);
+			printScoreboard();
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 		}
 		
 		//if second roll and not 10th frame, check for previous frame strike, add score, new frame, re-roll
 		else {
+			setFrameSecondBowl(downed, currentFrame);
+
 			List.get(currentFrame).setHit2(downed);
 			rollsThisFrame++;
 			strikeOrSpare();
