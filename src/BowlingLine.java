@@ -71,6 +71,7 @@
  * 
  */
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -84,6 +85,11 @@ public class BowlingLine {
 	private int rollsThisFrame;
 	private int currentFrame;
 	private int score;
+	//private int spareAdder;
+	//private boolean strikeAdder;
+	private ArrayList<Frame> List = new ArrayList<Frame>();
+	
+	
 	
 	private static final String invalidMessage = "Invalid roll, try again";
 	
@@ -101,9 +107,10 @@ public class BowlingLine {
 	public BowlingLine()
 	{
 		score = 0;
-		currentFrame = 1;
+		currentFrame = 0;
 		setPins(10);
 		enterRoll();
+		initList(); ///////change/////////
 		this.hit = this.bowl.nextInt();
 		if(bowlCheck(this.hit))
 		{
@@ -113,6 +120,40 @@ public class BowlingLine {
 		else
 			score(this.hit);
 	}
+	
+	private void initList() {
+		Frame frame0 = new Frame();
+		List.add(frame0);
+		Frame frame1 = new Frame();
+		List.add(frame1);
+		Frame frame2 = new Frame();
+		List.add(frame2);
+		Frame frame3 = new Frame();
+		List.add(frame3);
+		Frame frame4 = new Frame();
+		List.add(frame4);
+		Frame frame5 = new Frame();
+		List.add(frame5);
+		Frame frame6 = new Frame();
+		List.add(frame6);
+		Frame frame7 = new Frame();
+		List.add(frame7);
+		Frame frame8 = new Frame();
+		List.add(frame8);
+		Frame frame9 = new Frame();
+		List.add(frame9);
+	}
+	
+	private void strikeOrSpare() {
+		if(pinsLeft == 0) {
+			if(rollsThisFrame == 1)
+				List.get(currentFrame).setStrike(true);
+			else
+				List.get(currentFrame).setSpare(true);
+		}
+	}
+	
+	
 	
 	/* Wind up to the bowl
 	 * Inputs:
@@ -124,13 +165,15 @@ public class BowlingLine {
 	 */
 	private void rollBall()
 	{
-		while(currentFrame <= 10)
+		while(currentFrame <= 9)
 		{
 			if(rollsThisFrame == 0)	
 				setPins(10);
 			rollAction();
-			if(currentFrame < 10)
+			if(currentFrame < 9)
 				rollAction();
+			if(currentFrame == 9)
+				return;
 		}
 	}
 	
@@ -174,26 +217,116 @@ public class BowlingLine {
 	private void score(int downed)
 	{
 		pinsLeft = pinsLeft - downed;
-		if(rollsThisFrame == 0)
+
+		//first roll of each frame
+		if(rollsThisFrame == 0 && currentFrame != 9)
 		{
+			List.get(currentFrame).setHit1(downed);
 			rollsThisFrame++;
-			this.score = score + downed;
+			strikeOrSpare();
+			
+			//check previous 2 frames for strikes or spares to add additionalScore
+			if(currentFrame != 0) {
+				if(List.get(currentFrame - 1).getStrike()) {
+					if(currentFrame > 1) {
+						if(List.get(currentFrame - 2).getStrike()) {
+							List.get(currentFrame - 2).addAdditionalScore(downed);
+							this.score = score + downed;
+						}
+					}
+					List.get(currentFrame - 1).addAdditionalScore(downed);
+					this.score = score + downed * 2;
+				}
+			
+				else if(List.get(currentFrame - 1).getSpare()) {
+					List.get(currentFrame - 1).addAdditionalScore(downed);
+					this.score = score + downed * 2;
+				}
+			}
+			else
+				this.score = score + downed * 2;
+			
+			//if strike, go to next frame
+			if(List.get(currentFrame).getStrike()) {
+				currentFrame++;
+				setPins(10);
+				rollsThisFrame = 0;
+			}
+			//roll the next ball
 			rollBall();
 		}
-//		else if(rollsThisFrame == 1 && this.currentFrame == 10)
-//		{
-//			rollsThisFrame++;
-//			this.score = score + downed;
-//		}
-		else
-		{
+		//10th frame
+		else if(currentFrame == 9) {
+			//first roll
+			if(rollsThisFrame == 0) {
+				List.get(currentFrame).setHit1(downed);
+				rollsThisFrame++;
+				strikeOrSpare();
+				//if strike reset pins
+				if(List.get(9).getStrike())
+					setPins(10);
+				rollBall();
+			}
+			//third roll, just add score and game over
+			if(rollsThisFrame == 2) {
+				this.score = score + downed;
+				List.get(9).addAdditionalScore(downed);
+//				gameOver();
+//				endGame();
+				System.out.println("hi");
+			}
+			//second roll
+			else {
+				rollsThisFrame++;
+				//if first roll was strike, add new pins to additionalScore and reset pins if another strike rolled
+				if(List.get(9).getStrike()) {
+					this.score = score + downed;
+					List.get(9).addAdditionalScore(downed);
+					if(pinsLeft == 0)
+						setPins(10);
+					rollBall();
+				}
+				//check if spare, reset pins if spare and re-roll; else if not spare add downed and game over
+				else {
+					strikeOrSpare();
+					if(List.get(0).getSpare()) {
+						this.score = score + downed;
+						List.get(9).setHit2(downed);
+						setPins(10);
+						rollBall();
+					}
+					else {
+						this.score = score + downed;
+						List.get(currentFrame).setHit2(downed);
+						gameOver();
+					}
+					
+				}
+			}
+		}
+		
+		//if second roll and not 10th frame, check for previous frame strike, add score, new frame, re-roll
+		else {
+			List.get(currentFrame).setHit2(downed);
+			rollsThisFrame++;
+			strikeOrSpare();
+			if(currentFrame != 0)
+			{
+				if(List.get(currentFrame - 1).getStrike()) {
+					List.get(currentFrame - 1).addAdditionalScore(downed);
+					this.score = score + downed * 2;
+				}
+			}
+			else
+				this.score = score + downed * 2;
+			
 			currentFrame++;
 			setPins(10);
 			rollsThisFrame = 0;
-			this.score = score + downed;
-			System.out.println("Total Score in frame " + (currentFrame - 1) + " is " + getScore());
+			rollBall();
 		}
 	}
+
 	
 	/* Quick method in which a check for "knocking over more pins
 	 * than are up." Gotta prevent them cheaters!
@@ -209,7 +342,7 @@ public class BowlingLine {
 	 */
 	private void enterRoll()
 	{
-		System.out.print("Enter roll: ");	
+		System.out.print("Enter roll: ");		
 	}
 	
 	/* Checks to see which frame of the game and how many bowls have been made
@@ -217,8 +350,6 @@ public class BowlingLine {
 	 */
 	public boolean gameOver()
 	{
-		if(this.currentFrame == 10 && (this.rollsThisFrame == 2 || this.rollsThisFrame == 3))
-			return true;
 		return false;
 	}
 	
@@ -227,10 +358,7 @@ public class BowlingLine {
 	 */
 	public boolean canShowScoreFrame(int frame)
 	{
-		if(frame > this.currentFrame)
-			return false;
-		else
-			return true;
+		return false;
 	}
 	
 	/* Input: frame number

@@ -4,21 +4,22 @@ public class Frame {
 	private int additionalScore;
 	private boolean strike;
 	private boolean spare;
-	private int additionalHit;
+	
+	Frame pevious;
+	Frame next;
 	
 	public Frame() {
 		setHit1(-1);
 		setHit2(-1);
-		setAdditionalHit(0);
+		setAdditionalScore(0);
 		setStrike(false);
 		setSpare(false);
 	}
 	
-	private void setAdditionalHit(int i) {
-		// TODO Auto-generated method stub
-		this.additionalHit = i;
+	public void addAdditionalScore(int score) {
+		additionalScore += score;
 	}
-
+	
 	public void setHit1(int down) {
 		hit1 = down;
 	}
