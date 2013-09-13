@@ -150,6 +150,8 @@ public class TestBowlingLine {
 		assertEquals(game1.getScoreboard()[2][19], '3');
 	}
 	
+	
+	
 	@Test
 	public void testSetLastFrameBowl()
 	{
@@ -180,14 +182,13 @@ public class TestBowlingLine {
 		game1.setLastFrameThirdBowl(3, 2);
 		assertEquals(game1.getScoreboard()[2][19], '3');
 	}
-	
+
 	@Test
 	public void testScoreboardTotal()
 	{
 		game1.setScore(53);
 		game1.setCurrentFrame(3);
 		assertNotSame(game1.getScoreboard()[3][18], '5');
-//		game1.printScoreboard();
 
 		game1.setScore(0);
 		game1.printScoreboard();
