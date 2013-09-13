@@ -108,6 +108,8 @@ public class BowlingLine implements IBowlingLine {
 		currentFrame = 0;
 		setPins(10);
 		initList(); ///////change/////////
+		for(int x = 0; x < 10; x++)
+			frameScores[x] = -1;
 	}
 	
 	/* Set up the scoreboard
@@ -168,7 +170,6 @@ public class BowlingLine implements IBowlingLine {
 			int temp = 48 + hit;
 			scoreboard[2][(7*(currentFrame) + 3)] = (char)temp;
 		}
-//		setScoreboardFrameScore();
 	}
 	
 	public void setFrameSecondBowl(int hit, int currentFrame)
@@ -182,7 +183,6 @@ public class BowlingLine implements IBowlingLine {
 			int temp = 48 + hit;
 			scoreboard[2][(7*(currentFrame) + 5)] = (char)temp;
 		}
-//		setScoreboardFrameScore();
 	}
 	
 	public void setLastFrameFirstBowl(int hit, int currentFrame)
@@ -212,11 +212,6 @@ public class BowlingLine implements IBowlingLine {
 			int temp = 48 + hit;
 			scoreboard[2][(7*(currentFrame) + 4)] = (char)temp;
 		}
-//		if(this.pinsLeft == 0)
-//			setPins(10);
-//		List.get(9).setHit2(hit);
-//		this.rollsThisFrame++;
-
 	}
 
 	public void setLastFrameThirdBowl(int hit, int currentFrame)
@@ -251,7 +246,7 @@ public class BowlingLine implements IBowlingLine {
 	{
 		frameScores[frameNum] = frameScore;
 		
-		if(frameScore >= 0)
+		if(frameScore > 0)
 			scoreboard[3][(7*(frameNum) + 5)] = (char)(48 + (frameScore%10));
 		if(frameScore > 9)
 			scoreboard[3][(7*(frameNum) + 4)] = (char)(48 + ((frameScore/10)%10));
@@ -391,10 +386,6 @@ public class BowlingLine implements IBowlingLine {
 						else
 							setScoreboardFrameScore(currentFrame - 2, (frameScores[currentFrame-3] + List.get(currentFrame - 2).getHit1() + 
 								List.get(currentFrame - 2).getHit2() + List.get(currentFrame - 2).getAdditionalScore()));
-						///////////////////////////////////////////////////////////////////////////////////////////////////
-						System.out.println("Frame " + (currentFrame-2) + " = " + (List.get(currentFrame - 2).getHit1() + 
-								List.get(currentFrame - 2).getHit2() + List.get(currentFrame - 2).getAdditionalScore()));
-						///////////////////////////////////////////////////////////////////////////////////////////////////
 					}
 				}
 				List.get(currentFrame - 1).addAdditionalScore(downed);
@@ -425,10 +416,6 @@ public class BowlingLine implements IBowlingLine {
 				else
 				setScoreboardFrameScore(currentFrame - 1, (frameScores[currentFrame-2] + List.get(currentFrame - 1).getHit1() + 
 						List.get(currentFrame - 1).getHit2() + List.get(currentFrame - 1).getAdditionalScore()));
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////
-				System.out.println("Frame " + (currentFrame-1) + " = " + (List.get(currentFrame - 1).getHit1() + 
-						List.get(currentFrame - 1).getHit2() + List.get(currentFrame - 1).getAdditionalScore()));
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
 		}
 	}
@@ -477,7 +464,7 @@ public class BowlingLine implements IBowlingLine {
 		else if(currentFrame == 9) {
 			if(rollsThisFrame == 1)
 				setLastFrameSecondBowl(this.hit, this.currentFrame);
-			if(rollsThisFrame == 2 && (List.get(9).getHit1() + List.get(9).getHit2() >= 10))
+			if(rollsThisFrame == 2 && ((List.get(9).getHit1() + List.get(9).getHit2()) >= 10))
 			{
 				List.get(9).addAdditionalScore(downed);
 				setPins(10);
@@ -488,8 +475,6 @@ public class BowlingLine implements IBowlingLine {
 						List.get(9).getHit2() + List.get(9).getAdditionalScore()));
 				return;
 			}
-			else if(rollsThisFrame == 2 && (List.get(9).getHit1() + List.get(9).getHit2() < 10))
-				return;
 			List.get(currentFrame).setHit2(downed);
 			if(( List.get(9).getStrike() || List.get(9).getSpare() ) && rollsThisFrame < 2)
 				newFrame();
@@ -515,7 +500,6 @@ public class BowlingLine implements IBowlingLine {
 			newFrame();
 		}
 		
-		System.out.println("Total:" + score);
 		return;
 	}
 
@@ -550,7 +534,10 @@ public class BowlingLine implements IBowlingLine {
 	 */
 	public boolean canShowScoreFrame(int frame)
 	{
-		return false;
+		if(frameScores[frame - 1] == -1)
+			return false;
+
+		return true;
 	}
 	
 	/* Input: frame number
@@ -587,8 +574,7 @@ public class BowlingLine implements IBowlingLine {
 	 */
 	public int scoreAtFrame(int frame)
 	{
-		//TODO
-		return this.score;
+		return frameScores[frame - 1];
 	}
 	
 	/* This returns the total score that can be calculated thus far into the game.
