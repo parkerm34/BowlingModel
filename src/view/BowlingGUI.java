@@ -35,6 +35,9 @@ public class BowlingGUI extends JFrame implements ActionListener, ListSelectionL
 	  private JButton newGameButton = new JButton("New Game");
 	  private JLabel selectNewNumber = new JLabel("Select a number before clicking roll");
 	  private JList rollsHere;
+	  private RunBowlingLine game = new RunBowlingLine();
+	  private JTextArea scoreSheet = new JTextArea();
+	  private DefaultListModel listSelection = new DefaultListModel();
 
 	  
 	  private int list = -1;
@@ -44,7 +47,6 @@ public class BowlingGUI extends JFrame implements ActionListener, ListSelectionL
 		  layoutTheGUI();
 		  registerListeners();
 		  setBackground(Color.CYAN);
-		  setFont(new Font("Courier", Font.BOLD, 16));
 	  }
 
 	  private void layoutTheGUI()
@@ -53,7 +55,7 @@ public class BowlingGUI extends JFrame implements ActionListener, ListSelectionL
 		  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		   
 		  // TODO: size, locate all the graphical components
-		  this.setSize(700, 200);
+		  this.setSize(1000, 400);
 		  this.setLocation(100, 50);
 		    
 		  rollButton.addActionListener(this);
@@ -67,7 +69,6 @@ public class BowlingGUI extends JFrame implements ActionListener, ListSelectionL
 		    
 		  this.add(panel, BorderLayout.NORTH);
 		    
-		  DefaultListModel listSelection = new DefaultListModel();
 		    
 		  listSelection.addElement("0");
 		  listSelection.addElement("1");
@@ -83,30 +84,46 @@ public class BowlingGUI extends JFrame implements ActionListener, ListSelectionL
 		  
 //		  JList rollsHere = new JList(listSelection);
 		  rollsHere = new JList(listSelection);
-		    
+		  rollsHere.setBackground(Color.CYAN);
 		  this.add(rollsHere, BorderLayout.WEST);
 		    
 		  rollsHere.addListSelectionListener(this);
 		  rollsHere.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		    		    
-		  JTextArea scoreSheet = new JTextArea();
-		    
+		    		    		 
+		  scoreSheet.setFont(new Font("Courier", Font.BOLD, 16));
 		  this.add(scoreSheet);
+		  
 	  }
 
 		  
 	  public void actionPerformed(ActionEvent evt)
 	  {
 		  
-		  if(evt.getSource() == rollButton && list != -1)
+		  if(evt.getSource() == rollButton && list != -1 && !(game.game1.gameOver()))
 		  {
 			  System.out.println(list);
+			  game.RunBowlingLineUI(list);
 			  list = -1;
+			  rollsHere.removeAll();
+			  listSelection.removeAllElements();
+			  String printer = game.game1.printScoreboard();
+			  scoreSheet.setText(printer);
+			  for(int x = 0; x < (game.game1.pinsLeftToDown() + 1); x++)
+				  listSelection.addElement(x);
 		  }
-		  else if(evt.getSource() == rollButton && list == -1)
+		  else if(evt.getSource() == rollButton && list == -1 && !(game.game1.gameOver()))
 			  JOptionPane.showMessageDialog(null, "Select Pins First (0..Max Possible)");
+		  else if(evt.getSource() == rollButton && game.game1.gameOver())
+			  JOptionPane.showMessageDialog(null,  "Please select new game or close");
 		  else if(evt.getSource() == newGameButton)
-			  new RunBowlingLine();
+		  {
+			  game = new RunBowlingLine();
+			  scoreSheet.setText("");
+			  listSelection.removeAllElements();
+			  for(int x = 0; x < 11; x++)
+				  listSelection.addElement(x);
+
+		  }
 	  }
 	  
 	  private void registerListeners()

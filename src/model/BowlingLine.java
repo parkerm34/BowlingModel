@@ -127,7 +127,7 @@ public class BowlingLine implements IBowlingLine {
 			if((colCount%7 == 0) && (colCount != 0) && (colCount < 75))
 			{
 				scoreboard[0][colCount] = '|';
-				scoreboard[1][colCount] = '+';
+				scoreboard[1][colCount] = '|';
 				scoreboard[2][colCount] = '|';
 				scoreboard[3][colCount] = '|';
 			}
@@ -263,15 +263,17 @@ public class BowlingLine implements IBowlingLine {
 	 * setScorBoard method. This contains 2 for loops to print the
 	 * 2D char array
 	 */
-	public void printScoreboard()
+	public String printScoreboard()
 	{
+		String results = "";
 		setScoreboardTotal();
 		for(int rowCount = 0; rowCount < 4; rowCount++)
 		{
 			for(int colCount = 0; colCount < 80; colCount++)
-				System.out.print(scoreboard[rowCount][colCount]);
-			System.out.println();
+				results+= scoreboard[rowCount][colCount];
+			results += "\n";
 		}
+		return results;
 	}
 	
 	private void initList() {
