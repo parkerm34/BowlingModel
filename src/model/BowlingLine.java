@@ -1,3 +1,4 @@
+package model;
 /*
  * Parker Mathewson and Nicholas Pierson
  * 

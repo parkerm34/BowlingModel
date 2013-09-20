@@ -2,6 +2,8 @@
 import static org.junit.Assert.*;
 
 
+import model.BowlingLine;
+
 import org.junit.Test;
 
 

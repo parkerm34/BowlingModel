@@ -1,3 +1,4 @@
+package model;
 public class Frame {
 	private int hit1;
 	private int hit2;
