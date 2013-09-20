@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
@@ -16,14 +17,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class BowlingGUI extends JFrame{
+public class BowlingGUI extends JFrame implements ActionListener{
 
 	  public static void main(String[] args) {
 		    new BowlingGUI().setVisible(true);
 		  }
 
-		  private JButton rollLabel = new JButton("Roll");
-		  private JButton newGameLabel = new JButton("New Game");
+		  private JButton rollButton = new JButton("Roll");
+		  private JButton newGameButton = new JButton("New Game");
 		  private JLabel selectNewNumber = new JLabel("Select a number before clicking roll");
 
 		  public BowlingGUI() {
@@ -41,11 +42,14 @@ public class BowlingGUI extends JFrame{
 		    this.setSize(700, 200);
 		    this.setLocation(100, 50);
 		    
+		    rollButton.addActionListener(this);
+		    newGameButton.addActionListener(this);
+		    
 		    JPanel panel = new JPanel();
 		    		    
-		    panel.add(rollLabel);
+		    panel.add(rollButton);
 		    panel.add(selectNewNumber);
-		    panel.add(newGameLabel);
+		    panel.add(newGameButton);
 		    
 		    this.add(panel, BorderLayout.NORTH);
 		    
@@ -72,6 +76,15 @@ public class BowlingGUI extends JFrame{
 		    this.add(scoreSheet);
 		   }
 
+		  
+		  public void actionPerformed(ActionEvent evt)
+		  {
+			  if(evt.getSource() == rollButton)
+				  System.out.println("1");
+			  else if(evt.getSource() == newGameButton)
+				  System.out.println();
+		  }
+		  
 		  private void registerListeners() {
 		    
 		    // TODO: register both listeners (instances of private inner classes),
@@ -82,6 +95,9 @@ public class BowlingGUI extends JFrame{
 
 //		  private class InputListener implements ActionListener {
 //			  public void valueChanged()
+//			  {
+//				  
+//			  }
 //		  }
 		  // TODO: Add the private inner classes that implement ActionListener
 		  // and implement the actionPerformed method to do what should be done.
