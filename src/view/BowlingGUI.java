@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,9 +49,21 @@ public class BowlingGUI extends JFrame{
 		    
 		    this.add(panel, BorderLayout.NORTH);
 		    
-		    JList rollsHere = new JList();
+		    DefaultListModel listSelection = new DefaultListModel();
 		    
+		    listSelection.addElement("0");
+		    listSelection.addElement("1");
+		    listSelection.addElement("2");
+		    listSelection.addElement("3");
+		    listSelection.addElement("4");
+		    listSelection.addElement("5");
+		    listSelection.addElement("6");
+		    listSelection.addElement("7");
+		    listSelection.addElement("8");
+		    listSelection.addElement("9");
+		    listSelection.addElement("10");
 		    
+		    JList rollsHere = new JList(listSelection);
 		    
 		    this.add(rollsHere, BorderLayout.WEST);
 		    
